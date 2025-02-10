@@ -1,0 +1,64 @@
+version: '3.8'
+
+services:
+  mariadb:
+    image: mariadb:latest
+    container_name: mariadb
+    restart: unless-stopped
+    networks:
+      - wordpress-network
+    environment:
+      MYSQL_ROOT_PASSWORD: "Str0ngP@ssw0rd!"
+      MYSQL_DATABASE: wordpress
+      MYSQL_USER: wordpress
+      MYSQL_PASSWORD: "An0th3r$trongP@ss!"
+    volumes:
+      - /home/mariadb:/var/lib/mysql
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  wordpress:
+    image: wordpress:latest
+    container_name: wordpress
+    restart: unless-stopped
+    networks:
+      - wordpress-network
+    environment:
+      WORDPRESS_DB_HOST: mariadb
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: "An0th3r$trongP@ss!"
+      WORDPRESS_DB_NAME: wordpress
+    volumes:
+      - /home/wordpress:/var/www/html
+    ports:
+      - "8080:80"
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+  watchtower:
+    image: containrrr/watchtower:latest
+    container_name: watchtower
+    restart: unless-stopped
+    environment:
+      WATCHTOWER_REVIVE_STOPPED: "false"
+      WATCHTOWER_LABEL_ENABLE: "true"
+      WATCHTOWER_CLEANUP: "false"
+      WATCHTOWER_REMOVE_VOLUMES: "false"
+      WATCHTOWER_INCLUDE_STOPPED: "true"
+      WATCHTOWER_INCLUDE_RESTARTING: "true"
+      WATCHTOWER_WARN_ON_HEAD_FAILURE: "never"
+      WATCHTOWER_ROLLING_RESTART: "true"
+      WATCHTOWER_SCHEDULE: "0 0 3 * * *"
+      TZ: "Europe/Paris"
+    networks:
+      - watchtower-network
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+    labels:
+      - com.centurylinklabs.watchtower.enable=true
+
+networks:
+  wordpress-network:
+    driver: bridge
+  watchtower-network:
+    driver: bridge
