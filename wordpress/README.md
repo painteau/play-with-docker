@@ -81,5 +81,5 @@ This project is not made for production, but only for testing purposes.
 1. Fork the repository on GitHub: [play-with-docker](https://github.com/painteau/play-with-docker)
 2. Create a new branch (feature-branch)
 3. Commit and push your changes to your branch, and create a pull request.
-For major changes, please open an issue first to discuss the proposed modifications.
+- For major changes, please open an issue first to discuss the proposed modifications.
 
